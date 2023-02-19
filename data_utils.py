@@ -38,7 +38,6 @@ class TextAudioSpeakerLoader(torch.utils.data.Dataset):
         random.shuffle(self.audiopaths)
 
     def get_audio(self, filename):
-        filename = filename.replace("\\", "/")
         audio, sampling_rate = load_wav_to_torch(filename)
         if sampling_rate != self.sampling_rate:
             raise ValueError("{} SR doesn't match target {} SR".format(
@@ -55,7 +54,7 @@ class TextAudioSpeakerLoader(torch.utils.data.Dataset):
             spec = torch.squeeze(spec, 0)
             torch.save(spec, spec_filename)
 
-        spk = filename.split("/")[-2]
+        spk = filename.split(os.sep)[-2]
         spk = torch.LongTensor([self.spk_map[spk]])
 
         c = torch.load(filename + ".soft.pt").squeeze(0)
@@ -112,7 +111,6 @@ class EvalDataLoader(torch.utils.data.Dataset):
 
 
     def get_audio(self, filename):
-        filename = filename.replace("\\", "/")
         audio, sampling_rate = load_wav_to_torch(filename)
         if sampling_rate != self.sampling_rate:
             raise ValueError("{} SR doesn't match target {} SR".format(
@@ -129,7 +127,7 @@ class EvalDataLoader(torch.utils.data.Dataset):
             spec = torch.squeeze(spec, 0)
             torch.save(spec, spec_filename)
 
-        spk = filename.split("/")[-2]
+        spk = filename.split(os.sep)[-2]
         spk = torch.LongTensor([self.spk_map[spk]])
 
         c = torch.load(filename + ".soft.pt").squeeze(0)
